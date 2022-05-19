@@ -24,3 +24,52 @@ Il readme dovrebbe avere al massimo 150 caratteri.
 Molti Plugin di Wordpress svolgono il loro compito collegandosi ad uno o più "hooks" definiti in Wordpress. Quando Wordpress gira controlla per vedere se qualche Plugin ha 
 registrato delle funzioni da eseguire in quel momento, ed in tal caso la funzione viene eseguita. Queste funzioni modificano il funzionamento di WordPress.
 
+add_filter("the_content","add_line_to_footer");
+function add_line_to_footer($content)
+{
+   if(is_single() && is_main_query()){
+      $count = strlen($content);
+      return $content.'<p>Son of a bitch!</p>'.$count;
+   } //only if you're on a single screen for a post and only if it's the main query
+   return $content;
+}
+
+// is_single()
+// is_main_query()
+// is_page()
+
+2---------------------------
+
+class WordCountAndTimePlugin
+{
+   function __construct()
+   {
+      add_action('admin_menu', array($this, 'adminPage'));
+   }
+
+   function adminPage()
+   {
+      add_options_page('Worsds Count Settings', 'Word Count', 'manage_options', 'word-count-settings-page', array($this,'ourHTML')); //viene inserito nel menu impostazioni
+   }
+
+   /* 
+   1. Titolo della pagina che vogliamo creare, title
+   2. Testo del titolo nel menu laterale.
+   3. Permessi - es manage_options
+   4. slug (o short name) della pagina; usato alla fine dell'url.
+   5. Funzione che visualizza il contenuto html che abbiamo nella pagina
+*/
+   function ourHTML()
+   { ?>
+      <div class="wrap">
+         <h1>Word Count Settings</h1>
+      </div>
+   <?php }
+
+   /*
+      se non utilizziamo la classe dobbiamo sforzarci di cercare nomi univoci per le funzioni che non vadano in conflitto con altre funzioni già esistenti.
+      all'interno della classe (nome unico) possiamo utilizzare i nomi che vogliamo
+   */
+}
+
+$wordCountAndTimePlugin = new WordCountAndTimePlugin();
